@@ -13,14 +13,15 @@ root.render(
   </React.StrictMode>
 );
 
-// PWA 서비스 워커 등록
-if ('serviceWorker' in navigator) {
+// PWA 서비스 워커 등록 (개발 중에는 비활성화)
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then(registration => {
         console.log('SW registered: ', registration);
       })
-      .catch((registrationError) => {
+      .catch(registrationError => {
         console.log('SW registration failed: ', registrationError);
       });
   });

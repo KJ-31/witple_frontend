@@ -6,22 +6,34 @@ const getAPIBaseURL = () => {
   if (process.env.NODE_ENV === 'development') {
     const hostname = window.location.hostname;
     const port = '8000'; // 백엔드 포트
-    
+
     console.log('🔍 API URL 설정:', {
       hostname,
       port,
-      fullURL: `http://${hostname}:${port}`
+      fullURL: `http://${hostname}:${port}`,
+      location: window.location.href,
+      origin: window.location.origin,
     });
-    
-    // localhost인 경우
+
+    // 핸드폰에서 접속한 경우 (IP 주소로 접속)
+    if (window.location.href.includes('172.21.102.114')) {
+      return 'http://172.21.102.114:8000';
+    }
+
+    // localhost인 경우 (데스크톱)
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return `http://localhost:${port}`;
     }
-    
+
     // IP 주소인 경우 (모바일 접속)
+    if (hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+      return `http://${hostname}:${port}`;
+    }
+
+    // 기타 경우 (도메인 등)
     return `http://${hostname}:${port}`;
   }
-  
+
   // 프로덕션 환경
   return process.env.REACT_APP_API_URL || 'http://localhost:8000';
 };
@@ -136,8 +148,11 @@ export const checkAPIConnection = async (): Promise<boolean> => {
   try {
     console.log('🔍 API 연결 확인 시작...');
     console.log('🌐 API Base URL:', API_BASE_URL);
-    console.log('🔗 Full API URL:', `${API_BASE_URL}/api/${API_VERSION}/health`);
-    
+    console.log(
+      '🔗 Full API URL:',
+      `${API_BASE_URL}/api/${API_VERSION}/health`
+    );
+
     const response = await commonAPI.healthCheck();
     console.log('✅ API 연결 성공:', response.status);
     return response.status === 200;
@@ -147,7 +162,7 @@ export const checkAPIConnection = async (): Promise<boolean> => {
       message: error?.message,
       status: error?.response?.status,
       statusText: error?.response?.statusText,
-      url: error?.config?.url
+      url: error?.config?.url,
     });
     return false;
   }
