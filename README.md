@@ -241,7 +241,63 @@ REACT_APP_API_URL=https://your-backend-api.com
 
 ## 🤝 백엔드 연동
 
-FastAPI 백엔드와 연동하기 위해 `src/services/api.ts`에서 API 엔드포인트를 설정하세요.
+### 환경 변수 설정
+
+1. **환경 변수 파일 생성**:
+   ```bash
+   # .env 파일 생성 (env.example 참고)
+   cp env.example .env
+   ```
+
+2. **백엔드 URL 설정**:
+   ```env
+   # 개발 환경
+   REACT_APP_API_URL=http://localhost:8000
+   REACT_APP_API_VERSION=v1
+   
+   # 프로덕션 환경
+   REACT_APP_API_URL=https://your-backend-api.com
+   REACT_APP_API_VERSION=v1
+   ```
+
+### 백엔드 서버 실행
+
+FastAPI 백엔드가 실행 중이어야 합니다:
+
+```bash
+# 백엔드 프로젝트 디렉토리에서
+cd ../witple_backend  # 또는 백엔드 프로젝트 경로
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 연결 확인
+
+1. **자동 확인**: 앱 우상단에 API 연결 상태가 표시됩니다
+2. **수동 확인**: 브라우저 개발자 도구에서 네트워크 탭 확인
+3. **API 테스트**: `http://localhost:8000/api/v1/health` 접속
+
+### API 엔드포인트
+
+- **인증**: `/api/v1/auth/*`
+- **사용자**: `/api/v1/users/*`
+- **공통**: `/api/v1/health`, `/api/v1/version`
+
+### CORS 설정
+
+백엔드에서 CORS를 허용해야 합니다:
+
+```python
+# FastAPI 백엔드에서
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # 프론트엔드 URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
 
 ## 👥 팀 개발 가이드
 

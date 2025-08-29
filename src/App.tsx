@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Home from './pages/Home';
 import About from './pages/About';
 import Header from './components/Header';
+import APIConnectionStatus from './components/APIConnectionStatus';
 import './App.css';
 
 const AppContainer = styled.div`
@@ -21,6 +22,7 @@ function App() {
     <Router>
       <AppContainer>
         <Header />
+        <APIConnectionStatus />
         <MainContent>
           <Routes>
             <Route path="/" element={<Home />} />
