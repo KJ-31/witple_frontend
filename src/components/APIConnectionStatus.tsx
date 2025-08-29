@@ -45,7 +45,7 @@ const APIConnectionStatus: React.FC = () => {
       try {
         const connected = await checkAPIConnection();
         setIsConnected(connected);
-        
+
         // 디버깅 정보 출력
         if (process.env.NODE_ENV === 'development') {
           console.log('🔍 API 연결 상태:', connected);

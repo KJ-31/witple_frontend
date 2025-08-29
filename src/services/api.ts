@@ -7,6 +7,12 @@ const getAPIBaseURL = () => {
     const hostname = window.location.hostname;
     const port = '8000'; // 백엔드 포트
     
+    console.log('🔍 API URL 설정:', {
+      hostname,
+      port,
+      fullURL: `http://${hostname}:${port}`
+    });
+    
     // localhost인 경우
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return `http://localhost:${port}`;
@@ -128,10 +134,21 @@ export const commonAPI = {
 // API 상태 확인 함수
 export const checkAPIConnection = async (): Promise<boolean> => {
   try {
+    console.log('🔍 API 연결 확인 시작...');
+    console.log('🌐 API Base URL:', API_BASE_URL);
+    console.log('🔗 Full API URL:', `${API_BASE_URL}/api/${API_VERSION}/health`);
+    
     const response = await commonAPI.healthCheck();
+    console.log('✅ API 연결 성공:', response.status);
     return response.status === 200;
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ API 연결 실패:', error);
+    console.error('🔍 에러 상세:', {
+      message: error?.message,
+      status: error?.response?.status,
+      statusText: error?.response?.statusText,
+      url: error?.config?.url
+    });
     return false;
   }
 };
