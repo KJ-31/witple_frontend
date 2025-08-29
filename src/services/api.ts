@@ -1,7 +1,26 @@
 import axios from 'axios';
 
 // 환경 변수에서 API URL 가져오기
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const getAPIBaseURL = () => {
+  // 개발 환경에서 동적으로 API URL 결정
+  if (process.env.NODE_ENV === 'development') {
+    const hostname = window.location.hostname;
+    const port = '8000'; // 백엔드 포트
+    
+    // localhost인 경우
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return `http://localhost:${port}`;
+    }
+    
+    // IP 주소인 경우 (모바일 접속)
+    return `http://${hostname}:${port}`;
+  }
+  
+  // 프로덕션 환경
+  return process.env.REACT_APP_API_URL || 'http://localhost:8000';
+};
+
+const API_BASE_URL = getAPIBaseURL();
 const API_VERSION = process.env.REACT_APP_API_VERSION || 'v1';
 
 // API 엔드포인트 구성
@@ -95,7 +114,10 @@ export const userAPI = {
   updateProfile: (data: Partial<UserProfile>) =>
     api.put<UserProfile>(API_ENDPOINTS.USER.UPDATE_PROFILE, data),
   changePassword: (oldPassword: string, newPassword: string) =>
-    api.post(API_ENDPOINTS.USER.CHANGE_PASSWORD, { old_password: oldPassword, new_password: newPassword }),
+    api.post(API_ENDPOINTS.USER.CHANGE_PASSWORD, {
+      old_password: oldPassword,
+      new_password: newPassword,
+    }),
 };
 
 export const commonAPI = {

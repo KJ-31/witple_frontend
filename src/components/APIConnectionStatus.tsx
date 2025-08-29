@@ -22,11 +22,12 @@ const StatusDot = styled.div<{ $isConnected: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${props => props.$isConnected ? '#10b981' : '#ef4444'};
-  animation: ${props => props.$isConnected ? 'pulse' : 'none'} 2s infinite;
-  
+  background-color: ${props => (props.$isConnected ? '#10b981' : '#ef4444')};
+  animation: ${props => (props.$isConnected ? 'pulse' : 'none')} 2s infinite;
+
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -44,8 +45,16 @@ const APIConnectionStatus: React.FC = () => {
       try {
         const connected = await checkAPIConnection();
         setIsConnected(connected);
+        
+        // 디버깅 정보 출력
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔍 API 연결 상태:', connected);
+          console.log('🌐 현재 호스트:', window.location.hostname);
+          console.log('🔗 API URL:', `${window.location.hostname}:8000`);
+        }
       } catch (error) {
         setIsConnected(false);
+        console.error('❌ API 연결 오류:', error);
       } finally {
         setIsLoading(false);
       }

@@ -244,17 +244,19 @@ REACT_APP_API_URL=https://your-backend-api.com
 ### 환경 변수 설정
 
 1. **환경 변수 파일 생성**:
+
    ```bash
    # .env 파일 생성 (env.example 참고)
    cp env.example .env
    ```
 
 2. **백엔드 URL 설정**:
+
    ```env
    # 개발 환경
    REACT_APP_API_URL=http://localhost:8000
    REACT_APP_API_VERSION=v1
-   
+
    # 프로덕션 환경
    REACT_APP_API_URL=https://your-backend-api.com
    REACT_APP_API_VERSION=v1
