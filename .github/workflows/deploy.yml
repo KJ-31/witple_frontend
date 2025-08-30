@@ -25,7 +25,7 @@ jobs:
         with:
           source-directory: 'output'
           destination-github-username: JunPyo0117
-          destination-repository-name: witple_front
+          destination-repository-name: witple_frontend
           user-email: ${{ secrets.EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
           target-branch: main
