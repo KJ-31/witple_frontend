@@ -2,6 +2,12 @@ import axios from 'axios';
 
 // 환경 변수에서 API URL 가져오기
 const getAPIBaseURL = () => {
+  // 프로덕션 환경에서 환경 변수 우선 사용
+  if (process.env.REACT_APP_API_URL) {
+    console.log('🌐 프로덕션 API URL 사용:', process.env.REACT_APP_API_URL);
+    return process.env.REACT_APP_API_URL;
+  }
+
   // 개발 환경에서 동적으로 API URL 결정
   if (process.env.NODE_ENV === 'development') {
     const hostname = window.location.hostname;
@@ -34,8 +40,8 @@ const getAPIBaseURL = () => {
     return `http://${hostname}:${port}`;
   }
 
-  // 프로덕션 환경
-  return process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  // 기본값
+  return 'http://localhost:8000';
 };
 
 const API_BASE_URL = getAPIBaseURL();

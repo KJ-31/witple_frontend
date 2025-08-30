@@ -84,8 +84,21 @@ self.addEventListener('fetch', event => {
         })
         .catch(error => {
           console.warn('Fetch failed:', error);
+
+          // API 요청인 경우 더 자세한 로깅
+          if (event.request.url.includes('/api/')) {
+            console.error('API 요청 실패:', {
+              url: event.request.url,
+              method: event.request.method,
+              error: error.message,
+            });
+          }
+
           // 오프라인 페이지나 기본 응답 반환
-          return new Response('Network error', { status: 503 });
+          return new Response('Network error', {
+            status: 503,
+            statusText: 'Service Unavailable',
+          });
         });
     })
   );
