@@ -19,7 +19,7 @@ const Hero = styled.section`
 const Title = styled.h1`
   font-size: 2.5rem;
   margin-bottom: 20px;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -41,7 +41,7 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -79,14 +79,12 @@ const Home: React.FC = () => {
     <HomeContainer>
       <Hero>
         <Title>Witple에 오신 것을 환영합니다!!!</Title>
-        <Subtitle>
-          웹뷰와 PWA를 지원하는 현대적인 React 애플리케이션
-        </Subtitle>
+        <Subtitle>웹뷰와 PWA를 지원하는 현대적인 React 애플리케이션</Subtitle>
         <Button onClick={() => alert('버튼이 클릭되었습니다!')}>
           시작하기
         </Button>
       </Hero>
-      
+
       <Features>
         <FeatureCard>
           <FeatureTitle>웹뷰 지원</FeatureTitle>
@@ -94,14 +92,14 @@ const Home: React.FC = () => {
             모바일 앱 내에서 웹뷰로 완벽하게 작동하는 반응형 디자인
           </FeatureDescription>
         </FeatureCard>
-        
+
         <FeatureCard>
           <FeatureTitle>PWA 기능</FeatureTitle>
           <FeatureDescription>
             Progressive Web App으로 네이티브 앱과 같은 사용자 경험 제공
           </FeatureDescription>
         </FeatureCard>
-        
+
         <FeatureCard>
           <FeatureTitle>Vercel 배포</FeatureTitle>
           <FeatureDescription>
