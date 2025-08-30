@@ -63,6 +63,10 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
         }
       ]
     },
@@ -80,6 +84,10 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/json"
         }
       ]
     },
@@ -97,23 +105,36 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html"
         }
       ]
     },
     {
-      "source": "/(.*\\.js|.*\\.css)",
+      "source": "/(.*\\.js)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
+          "value": "public, max-age=31536000, immutable"
         },
         {
-          "key": "Pragma",
-          "value": "no-cache"
+          "key": "Content-Type",
+          "value": "application/javascript"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.css)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         },
         {
-          "key": "Expires",
-          "value": "0"
+          "key": "Content-Type",
+          "value": "text/css"
         }
       ]
     },
@@ -122,15 +143,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }

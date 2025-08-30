@@ -36,6 +36,21 @@ self.addEventListener('activate', event => {
 
 // 네트워크 요청 가로채기
 self.addEventListener('fetch', event => {
+  // chrome-extension 스키마나 지원하지 않는 스키마는 건너뛰기
+  if (
+    event.request.url.startsWith('chrome-extension://') ||
+    event.request.url.startsWith('chrome://') ||
+    event.request.url.startsWith('moz-extension://') ||
+    event.request.url.startsWith('safari-extension://')
+  ) {
+    return;
+  }
+
+  // GET 요청만 캐시
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(response => {
       // 캐시에서 찾으면 반환
@@ -44,20 +59,34 @@ self.addEventListener('fetch', event => {
       }
 
       // 캐시에 없으면 네트워크에서 가져오기
-      return fetch(event.request).then(response => {
-        // 유효한 응답이 아니면 그대로 반환
-        if (!response || response.status !== 200 || response.type !== 'basic') {
+      return fetch(event.request)
+        .then(response => {
+          // 유효한 응답이 아니면 그대로 반환
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type !== 'basic'
+          ) {
+            return response;
+          }
+
+          // 응답을 복제하여 캐시에 저장
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            try {
+              cache.put(event.request, responseToCache);
+            } catch (error) {
+              console.warn('Cache put failed:', error);
+            }
+          });
+
           return response;
-        }
-
-        // 응답을 복제하여 캐시에 저장
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
+        })
+        .catch(error => {
+          console.warn('Fetch failed:', error);
+          // 오프라인 페이지나 기본 응답 반환
+          return new Response('Network error', { status: 503 });
         });
-
-        return response;
-      });
     })
   );
 });

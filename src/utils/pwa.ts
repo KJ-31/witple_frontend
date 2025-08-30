@@ -4,6 +4,50 @@ interface NavigatorWithStandalone extends Navigator {
   standalone?: boolean;
 }
 
+// Service Worker 등록
+export const registerServiceWorker = async (): Promise<void> => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+      });
+
+      console.log('Service Worker 등록 성공:', registration);
+
+      // 업데이트 확인
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (
+              newWorker.state === 'installed' &&
+              navigator.serviceWorker.controller
+            ) {
+              console.log('새로운 Service Worker가 설치되었습니다.');
+            }
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Service Worker 등록 실패:', error);
+    }
+  }
+};
+
+// Service Worker 업데이트 확인
+export const checkForServiceWorkerUpdate = async (): Promise<void> => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (registration) {
+        await registration.update();
+      }
+    } catch (error) {
+      console.error('Service Worker 업데이트 확인 실패:', error);
+    }
+  }
+};
+
 export const isPWAInstalled = (): boolean => {
   return (
     window.matchMedia('(display-mode: standalone)').matches ||
