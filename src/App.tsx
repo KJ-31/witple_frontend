@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Home from './pages/Home';
@@ -18,6 +18,40 @@ const MainContent = styled.main`
 `;
 
 function App() {
+  useEffect(() => {
+    // 캐시 무효화 로직
+    const clearCache = () => {
+      // Service Worker 캐시 무효화
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          for (const registration of registrations) {
+            registration.unregister();
+          }
+        });
+      }
+
+      // 브라우저 캐시 무효화
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          for (const name of names) {
+            caches.delete(name);
+          }
+        });
+      }
+    };
+
+    // 앱 시작 시 캐시 무효화
+    clearCache();
+
+    // 페이지 포커스 시 캐시 무효화 (탭 전환 시)
+    const handleFocus = () => {
+      clearCache();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
   return (
     <Router>
       <AppContainer>
