@@ -78,7 +78,7 @@ const Home: React.FC = () => {
   return (
     <HomeContainer>
       <Hero>
-        <Title>Witple에 오신 것을 환영합니다!!</Title>
+        <Title>Witple에 오신 것을 환영합니다!!!!</Title>
         <Subtitle>
           웹뷰와 PWA를 지원하는 현대적인 React 애플리케이션
         </Subtitle>
