@@ -1,5 +1,5 @@
 // PWA Service Worker
-const CACHE_NAME = 'witple-v1';
+const CACHE_NAME = 'witple-v2';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
@@ -36,6 +36,11 @@ self.addEventListener('activate', event => {
 
 // 네트워크 요청 가로채기
 self.addEventListener('fetch', event => {
+  // API 요청은 캐시하지 않음
+  if (event.request.url.includes('/api/')) {
+    return;
+  }
+
   // chrome-extension 스키마나 지원하지 않는 스키마는 건너뛰기
   if (
     event.request.url.startsWith('chrome-extension://') ||
@@ -46,61 +51,30 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // GET 요청만 캐시
-  if (event.request.method !== 'GET') {
-    return;
-  }
-
+  // 모든 요청을 네트워크에서 직접 가져오기 (캐시 사용 안함)
   event.respondWith(
-    caches.match(event.request).then(response => {
-      // 캐시에서 찾으면 반환
-      if (response) {
+    fetch(event.request)
+      .then(response => {
         return response;
-      }
+      })
+      .catch(error => {
+        console.warn('Fetch failed:', error);
 
-      // 캐시에 없으면 네트워크에서 가져오기
-      return fetch(event.request)
-        .then(response => {
-          // 유효한 응답이 아니면 그대로 반환
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== 'basic'
-          ) {
-            return response;
-          }
-
-          // 응답을 복제하여 캐시에 저장
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            try {
-              cache.put(event.request, responseToCache);
-            } catch (error) {
-              console.warn('Cache put failed:', error);
-            }
+        // API 요청인 경우 더 자세한 로깅
+        if (event.request.url.includes('/api/')) {
+          console.error('API 요청 실패:', {
+            url: event.request.url,
+            method: event.request.method,
+            error: error.message,
           });
+        }
 
-          return response;
-        })
-        .catch(error => {
-          console.warn('Fetch failed:', error);
-
-          // API 요청인 경우 더 자세한 로깅
-          if (event.request.url.includes('/api/')) {
-            console.error('API 요청 실패:', {
-              url: event.request.url,
-              method: event.request.method,
-              error: error.message,
-            });
-          }
-
-          // 오프라인 페이지나 기본 응답 반환
-          return new Response('Network error', {
-            status: 503,
-            statusText: 'Service Unavailable',
-          });
+        // 오프라인 페이지나 기본 응답 반환
+        return new Response('Network error', {
+          status: 503,
+          statusText: 'Service Unavailable',
         });
-    })
+      })
   );
 });
 
