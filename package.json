@@ -26,8 +26,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false CI=false REACT_APP_BUILD_TIME=$(date +%s) react-scripts build",
-    "build:prod": "GENERATE_SOURCEMAP=false CI=false REACT_APP_BUILD_TIME=$(date +%s) react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false CI=false REACT_APP_BUILD_TIME=$(date +%s) REACT_APP_VERSION=$(date +%Y%m%d_%H%M%S) react-scripts build",
+    "build:prod": "GENERATE_SOURCEMAP=false CI=false REACT_APP_BUILD_TIME=$(date +%s) REACT_APP_VERSION=$(date +%Y%m%d_%H%M%S) react-scripts build",
     "build:dev": "GENERATE_SOURCEMAP=true CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

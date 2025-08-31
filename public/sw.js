@@ -1,5 +1,5 @@
 // PWA Service Worker
-const CACHE_NAME = 'witple-v2';
+const CACHE_NAME = 'witple-v3-' + Date.now();
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
@@ -24,10 +24,9 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+          // 모든 캐시 삭제
+          console.log('Deleting cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
     })
