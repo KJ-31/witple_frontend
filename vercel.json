@@ -50,10 +50,6 @@
         {
           "key": "Surrogate-Control",
           "value": "no-store"
-        },
-        {
-          "key": "Vary",
-          "value": "*"
         }
       ]
     },

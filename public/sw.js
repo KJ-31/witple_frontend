@@ -10,12 +10,9 @@ const urlsToCache = [
 
 // 서비스 워커 설치
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('Opened cache');
-      return cache.addAll(urlsToCache);
-    })
-  );
+  console.log('Service Worker 설치됨 - 캐시 비활성화');
+  // 캐시를 사용하지 않으므로 바로 활성화
+  self.skipWaiting();
 });
 
 // 서비스 워커 활성화
