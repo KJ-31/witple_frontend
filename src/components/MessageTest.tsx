@@ -80,13 +80,35 @@ const MessageTest: React.FC = () => {
     try {
       setLoading(true);
       const response = await messageAPI.getMessages();
-      setMessages(response.data);
-      setStatus({ type: 'success', message: '메시지 목록을 불러왔습니다.' });
+
+      // 응답 데이터 형태 확인 및 안전한 처리
+      console.log('📄 API 응답:', response);
+      console.log('📄 응답 데이터:', response.data);
+
+      let messageList = [];
+      if (Array.isArray(response.data)) {
+        messageList = response.data;
+      } else if (response.data && Array.isArray(response.data.messages)) {
+        messageList = response.data.messages;
+      } else if (response.data && Array.isArray(response.data.data)) {
+        messageList = response.data.data;
+      } else {
+        console.warn('⚠️ 예상하지 못한 응답 형태:', response.data);
+        messageList = [];
+      }
+
+      setMessages(messageList);
+      setStatus({
+        type: 'success',
+        message: `메시지 목록을 불러왔습니다. (${messageList.length}개)`,
+      });
     } catch (error: any) {
+      console.error('❌ 메시지 목록 불러오기 실패:', error);
       setStatus({
         type: 'error',
         message: `메시지 목록 불러오기 실패: ${error.message}`,
       });
+      setMessages([]);
     } finally {
       setLoading(false);
     }
@@ -101,11 +123,14 @@ const MessageTest: React.FC = () => {
 
     try {
       setLoading(true);
-      await messageAPI.saveMessage(message);
+      const response = await messageAPI.saveMessage(message);
+      console.log('💾 저장 응답:', response);
+
       setMessage('');
       setStatus({ type: 'success', message: '메시지가 저장되었습니다!' });
       loadMessages(); // 목록 새로고침
     } catch (error: any) {
+      console.error('❌ 메시지 저장 실패:', error);
       setStatus({
         type: 'error',
         message: `메시지 저장 실패: ${error.message}`,
@@ -162,20 +187,22 @@ const MessageTest: React.FC = () => {
         {messages.length === 0 ? (
           <p>저장된 메시지가 없습니다.</p>
         ) : (
-          messages.map(msg => (
-            <MessageItem key={msg.id}>
-              <div>{msg.content}</div>
-              <small>ID: {msg.id}</small>
-              <Button
-                onClick={() => deleteMessage(msg.id)}
-                style={{
-                  marginTop: '5px',
-                  padding: '5px 10px',
-                  fontSize: '12px',
-                }}
-              >
-                삭제
-              </Button>
+          messages.map((msg, index) => (
+            <MessageItem key={msg.id || index}>
+              <div>{msg.content || msg.message || '내용 없음'}</div>
+              <small>ID: {msg.id || `temp-${index}`}</small>
+              {msg.id && (
+                <Button
+                  onClick={() => deleteMessage(msg.id)}
+                  style={{
+                    marginTop: '5px',
+                    padding: '5px 10px',
+                    fontSize: '12px',
+                  }}
+                >
+                  삭제
+                </Button>
+              )}
             </MessageItem>
           ))
         )}
