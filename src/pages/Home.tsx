@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import MessageTest from '../components/MessageTest';
 
 const HomeContainer = styled.div`
   padding: 20px;
@@ -107,6 +108,8 @@ const Home: React.FC = () => {
           </FeatureDescription>
         </FeatureCard>
       </Features>
+
+      <MessageTest />
     </HomeContainer>
   );
 };

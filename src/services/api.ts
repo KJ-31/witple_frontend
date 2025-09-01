@@ -149,6 +149,15 @@ export const commonAPI = {
   getVersion: () => api.get(API_ENDPOINTS.COMMON.VERSION),
 };
 
+// 메시지 관련 API
+export const messageAPI = {
+  saveMessage: (message: string) => api.post('/messages', { content: message }),
+
+  getMessages: () => api.get('/messages'),
+
+  deleteMessage: (id: string) => api.delete(`/messages/${id}`),
+};
+
 // API 상태 확인 함수
 export const checkAPIConnection = async (): Promise<boolean> => {
   try {
