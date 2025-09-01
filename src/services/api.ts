@@ -40,8 +40,10 @@ const getAPIBaseURL = () => {
     return `http://${hostname}:${port}`;
   }
 
-  // 기본값
-  return 'http://localhost:8000';
+  // 프로덕션 환경 - https 프로토콜 사용
+  const productionURL = 'https://api.witple.kro.kr';
+  console.log('🌐 프로덕션 API URL 사용:', productionURL);
+  return productionURL;
 };
 
 const API_BASE_URL = getAPIBaseURL();
@@ -170,6 +172,17 @@ export const checkAPIConnection = async (): Promise<boolean> => {
 
     const response = await commonAPI.healthCheck();
     console.log('✅ API 연결 성공:', response.status);
+
+    // 응답 내용 확인 (HTML이 아닌 JSON인지 체크)
+    if (
+      typeof response.data === 'string' &&
+      (response.data.includes('<!doctype html>') ||
+        response.data.includes('<html'))
+    ) {
+      console.warn('⚠️ HTML 응답 - 실제 API가 아닙니다');
+      return false;
+    }
+
     return response.status === 200;
   } catch (error: any) {
     console.error('❌ API 연결 실패:', error);
