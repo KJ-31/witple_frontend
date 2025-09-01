@@ -161,6 +161,10 @@ const MessageTest: React.FC = () => {
   return (
     <TestContainer>
       <Title>📝 백엔드 연결 테스트 - 메시지 저장</Title>
+      <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>
+        💡 현재 백엔드가 다운 상태입니다. 메시지 저장 기능을 테스트하려면 백엔드
+        서버를 먼저 실행해주세요.
+      </p>
 
       <Input
         type="text"
